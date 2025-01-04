@@ -1,10 +1,10 @@
 import java.util.*;
 
 public class Dijkstra{
+    //constructor:
     static class Edge{
         int node, weight;
 
-        //constructor:
         Edge(int node, int weight){
             this.node = node;
             this.weight = weight;
@@ -12,33 +12,32 @@ public class Dijkstra{
     }
 
     public static int[] dijkstra(List<List<Edge>> graph, int start){
-        int n = graph.size();
-        int[] distances = new int[n];
-        Arrays.fill(distances, Integer.MAX_VALUE / 2);
-        distances[start] = 0;
+       int n = graph.size();
+       int[] distances = new int[n];
+       Arrays.fill(distances, Integer.MAX_VALUE);
+       distances[start] = 0;
 
-        PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
-        pq.add(new Edge(start, 0));
+       PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
+       pq.add(new Edge(start, 0));
 
+       while(!pq.isEmpty()){
+        Edge current = pq.poll();
+        int currNode = current.node;
+        int currDist = current.weight;
 
-        while (!pq.isEmpty()) {
-            Edge current = pq.poll();
-            int currNode = current.node;
-            int currDist = current.weight;
+        if (currDist > distances[currNode]) continue;
 
-            if (currDist > distances[currNode]) continue;
+        for (Edge edge : graph.get(currNode)){
+            int nextNode = edge.node;
+            int newDist = currDist + edge.weight;
 
-            for (Edge edge : graph.get(currNode)){
-                int nextNode = edge.node;
-                int newDist = currDist + edge.weight;
-
-                if (newDist < distances[nextNode]){
-                    distances[nextNode] = newDist;
-                    pq.add(new Edge(nextNode, newDist));
-                }
+            if (newDist < distances[nextNode]){
+                distances[nextNode] = newDist;
+                pq.add(new Edge(nextNode, newDist));
             }
         }
-        return distances;
+       }
+       return distances;
     }
 
     static void addEdge(List<List<Edge>> graph, int s, int t, int w){
