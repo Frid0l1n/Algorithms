@@ -12,32 +12,33 @@ public class Dijkstra{
     }
 
     public static int[] dijkstra(List<List<Edge>> graph, int start){
-      int n = graph.size();
-      int[] distances = new int[n];
-      Arrays.fill(distances, Integer.MAX_VALUE / 2);
-      distances[start] = 0;
+        int n = graph.size();
+        int[] distances = new int[n];
+        Arrays.fill(distances, Integer.MAX_VALUE / 2);
+        distances[start] = 0;
 
-      PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
-      pq.add(new Edge(start, 0));
+        PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
+        pq.add(new Edge(0, start));
 
-      while (!pq.isEmpty()){
-        Edge current = pq.poll();
-        int currentNode = current.node;
-        int currentDist = current.weight;
+        while(!pq.isEmpty()){
+            Edge curr = pq.poll();
+            int currNode = curr.node;
+            int currDist = curr.weight;
 
-        if (currentDist > distances[currentNode]) continue;
+            if (currDist > distances[currNode]) continue;
 
-        for (Edge edge : graph.get(currentNode)){
-            int nextNode = edge.node;
-            int newDist = currentDist + edge.weight;
+            for (Edge edge : graph.get(currNode)){
+                int nextNode = edge.node;
+                int nextDist = edge.weight;
+                int newDist = currDist + nextDist;
 
-            if (newDist < distances[nextNode]){
-                distances[nextNode] = newDist;
-                pq.add(new Edge(nextNode, newDist));
+                if (newDist < distances[nextNode]){
+                    distances[nextNode] = newDist;
+                    pq.add(new Edge(nextNode, newDist));
+                }
             }
         }
-      }
-      return distances;
+        return distances;
     }
 
     static void addEdge(List<List<Edge>> graph, int s, int t, int w){

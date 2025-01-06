@@ -6,7 +6,7 @@ public class Dfs{
         System.out.println(s);
 
         for (int i : adj.get(s)){
-            while (!visited[i]){
+            if (!visited[i]){
                 visited[i] = true;
                 DFSRec(adj, visited, i);
             }
