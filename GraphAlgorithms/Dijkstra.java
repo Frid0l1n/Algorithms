@@ -14,11 +14,11 @@ public class Dijkstra{
     public static int[] dijkstra(List<List<Edge>> graph, int start){
         int n = graph.size();
         int[] distances = new int[n];
-        Arrays.fill(distances, Integer.MAX_VALUE / 2);
+        Arrays.fill(distances, Integer.MAX_VALUE);
         distances[start] = 0;
 
         PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
-        pq.add(new Edge(0, start));
+        pq.add(new Edge(start, 0));
 
         while(!pq.isEmpty()){
             Edge curr = pq.poll();
@@ -32,7 +32,7 @@ public class Dijkstra{
                 int nextDist = edge.weight;
                 int newDist = currDist + nextDist;
 
-                if (newDist < distances[nextNode]){
+                if (distances[nextNode] > newDist){
                     distances[nextNode] = newDist;
                     pq.add(new Edge(nextNode, newDist));
                 }
