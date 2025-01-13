@@ -1,60 +1,52 @@
 import java.util.*;
 
-public class BellmanFord{
-    static class Edge {
-        int src, dest, weight;
-        //constructor:
-        Edge(int src, int dest, int weight){
-            this.src = src;
-            this.dest = dest;
-            this.weight = weight;
-        }
-    }
+public class BellmanFord {
+    // Bellman-Ford algorithm
+    public static int[] bellmanFord(int V, int[][] edges, int src) {
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MAX_VALUE / 2);
+        dist[src] = 0;
 
-    public static int[] bellmanFord(List<Edge> edges, int nodes, int start) throws Exception {
-        int[] distances = new int[nodes];
-        Arrays.fill(distances, Integer.MAX_VALUE / 2);
-        distances[start] = 0;
+        // Relax all edges (V - 1) times
+        for (int i = 0; i < V - 1; i++) {
+            for (int[] edge : edges) {
+                int u = edge[0];
+                int v = edge[1];
+                int wt = edge[2];
 
-        for(int i = 0; i < nodes - 1; i++){
-            for (Edge edge : edges) {
-                if (distances[edge.src] != Integer.MAX_VALUE / 2 &&
-                distances[edge.src] + edge.weight < distances[edge.dest]) {
-                    distances[edge.dest] = distances[edge.src] + edge.weight;
+                if (dist[u] != Integer.MAX_VALUE / 2 && dist[u] + wt < dist[v]) {
+                    // Update shortest distance to node v
+                    if (i == V - 1){
+                        return new int[]{-1};
+                    }
+
+                    dist[v] = dist[u] + wt;
                 }
             }
         }
 
-        for (Edge edge : edges){
-            if (distances[edge.src] != Integer.MAX_VALUE / 2 &&
-            distances[edge.src] + edge.weight < distances[edge.dest]){
-                throw new Exception("Graph conatins a negative weight cycle");
-            }
-        }
-
-        return distances;
+        return dist;
     }
 
-    public static void main(String[] args){
-        int nodes = 5;
+    public static void main(String[] args) {
+        int V = 5;
 
-        List<Edge> edges = new ArrayList<>();
-        edges.add(new Edge(0, 1, -1));
-        edges.add(new Edge(0, 2, 4));
-        edges.add(new Edge(1, 2, 3));
-        edges.add(new Edge(1, 3, 2));
-        edges.add(new Edge(1, 4, 2));
-        edges.add(new Edge(3, 2, 5));
-        edges.add(new Edge(3, 1, 1));
-        edges.add(new Edge(4, 3, -3));
+        int[][] edges = {
+            {1, 3, 2},
+            {4, 3, -1},
+            {2, 4, 1},
+            {1, 2, 1},
+            {0, 1, 5}
+        };
 
-        int startNode = 0;
+        int src = 0;
+        int[] ans = bellmanFord(V, edges, src);
 
-        try{
-            int[] distances = bellmanFord(edges, nodes, startNode);
-            System.out.println(Arrays.toString(distances));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        if (ans.length == 1 && ans[0] == -1) {
+            System.out.println("Negative weight cycle detected.");
+        } else {
+            System.out.println("Shortest distances from source " + src + ":");
+            System.out.println(Arrays.toString(ans));
         }
     }
 }
